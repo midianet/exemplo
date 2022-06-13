@@ -1,6 +1,18 @@
+const { query } = require("express");
 const express = require("express");
+const _ = require('lodash');
 const router = express.Router();
 const { v4: uuid } = require('uuid');
+
+const buildLinks = function(id,props){
+	const baseUrl = "/v2/produtos";
+	let links     = [];
+	if(props.includes('isSelf'))  links.push({rel:"self",method:"GET",href:`${baseUrl}/${id}`});
+	if(props.includes('isCreate')) links.push({rel:"create",method:"POST",title:"Cria um produto",href:baseUrl});
+	if(props.includes('isUpdate')) links.push({rel:"update",method:"PUT",title:"Altera um produto",href:`${baseUrl}/${id}`});
+	if(props.includes('isDelete')) links.push({rel:"delete",method:"DELETE",title:"Remove um produto",href:`${baseUrl}/${id}`});
+	return links;
+}
 
 /**
  * @swagger
@@ -24,6 +36,7 @@ const { v4: uuid } = require('uuid');
  *       example:
  *         id: d5fE_asz
  *         nome: Novo Sapato 
+ *         imposto: 15.23
  *         valor: 123.45
  */
 
@@ -36,7 +49,7 @@ const { v4: uuid } = require('uuid');
 
 /**
  * @swagger
- * /produtos:
+ * /v2/produtos:
  *   get:
  *     summary: Retorna a lista com todos os produtos
  *     tags: [Produtos]
@@ -51,13 +64,16 @@ const { v4: uuid } = require('uuid');
  *                 $ref: '#/components/schemas/Produto'
  */
 router.get("/", (req, res) => {
-	const produtos = req.app.db.get("produtos");
+	const produtos = _.toArray(req.app.db.get("produtos"))
+	if(req.query.hateoas){
+		produtos.forEach(produto => produto.links = buildLinks(produto.id,['isSelf','isUpdate','isDelete'])); 	
+	}
 	res.send(produtos);
 });
 
 /**
  * @swagger
- * /produtos/{id}:
+ * /v2/produtos/{id}:
  *   get:
  *     summary: Retorna o produto por id
  *     tags: [Produtos]
@@ -82,15 +98,19 @@ router.get("/", (req, res) => {
  */
 router.get("/:id", (req, res) => {
   const produto = req.app.db.get("produtos").find({ id: req.params.id }).value();
-  if(!produto){
-    res.sendStatus(404)
+  if(produto){
+	if(req.query.hateoas){
+		produto.links = buildLinks(produto.id,['isSelf','isUpdate','isDelete'])
+	}
+	res.send(produto);    
+  }else{
+	res.sendStatus(404)
   }
-  res.send(produto);
 });
 
 /**
  * @swagger
- * /produtos:
+ * /v2/produtos:
  *   post:
  *     summary: Cria um novo produto
  *     tags: [Produtos]
@@ -118,6 +138,9 @@ router.post("/", (req, res) => {
 		};
     	req.app.db.get("produtos").push(produto).write();
     	res.status(201)
+		if(req.query.hateoas){
+			buildLinks(produto.id,['isSelf','isUpdate','isDelete'])
+		}
     	res.send(produto)
 	} catch (error) {
 		return res.status(500).send(error);
@@ -126,7 +149,7 @@ router.post("/", (req, res) => {
 
 /**
  * @swagger
- * /produtos/{id}:
+ * /v2/produtos/{id}:
  *  put:
  *    summary: Atualiza o produto por id
  *    tags: [Produtos]
@@ -162,7 +185,11 @@ router.put("/:id", (req, res) => {
 			.find({ id: req.params.id })
 			.assign(req.body)
 			.write();
-		res.send(req.app.db.get("produtos").find({ id: req.params.id }));
+		const produto =  req.app.db.get("produtos").find({ id: req.params.id })
+		if(req.query.hateoas){
+			buildLinks(produto.id,['isSelf','isUpdate','isDelete'])
+		}		
+		res.send(produto);
 	} catch (error) {
 		return res.status(500).send(error);
 	}
@@ -170,7 +197,7 @@ router.put("/:id", (req, res) => {
 
 /**
  * @swagger
- * /produtos/{id}:
+ * /v2/produtos/{id}:
  *   delete:
  *     summary: Remove o produto por id
  *     tags: [Produtos]

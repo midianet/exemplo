@@ -3,17 +3,25 @@
     {
       "id": "0kFaJHB2",
       "nome": "Tênis Nike",
+      "imposto": 12.8,
       "valor": 38.87
     },
     {
       "id": "BDUDxb6F",
       "nome": "Sapato Social",
+      "imposto": 53.44,
       "valor": 198.43
     },
     {
       "id": "d5sz",
       "nome": "Sandália Tropical",
+      "imposto": 55.33,
       "valor": 123.12
+    },
+    {
+      "id": "3e8b0be2-ee15-4f4f-8ee5-90b0d3952b92",
+      "nome": "Novo Sapato",
+      "valor": 123.45
     }
   ]
 }
