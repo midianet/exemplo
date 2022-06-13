@@ -1,0 +1,19 @@
+{
+  "produtos": [
+    {
+      "id": "0kFaJHB2",
+      "nome": "Tênis Nike",
+      "valor": 38.87
+    },
+    {
+      "id": "BDUDxb6F",
+      "nome": "Sapato Social",
+      "valor": 198.43
+    },
+    {
+      "id": "d5sz",
+      "nome": "Sandália Tropical",
+      "valor": 123.12
+    }
+  ]
+}
