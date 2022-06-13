@@ -51,8 +51,8 @@ const { v4: uuid } = require('uuid');
  *                 $ref: '#/components/schemas/Produto'
  */
 router.get("/", (req, res) => {
-	const books = req.app.db.get("produtos");
-	res.send(books);
+	const produtos = req.app.db.get("produtos");
+	res.send(produtos);
 });
 
 /**
@@ -81,11 +81,11 @@ router.get("/", (req, res) => {
  *         description: Ocorreu algum erro
  */
 router.get("/:id", (req, res) => {
-  const book = req.app.db.get("produtos").find({ id: req.params.id }).value();
-  if(!book){
+  const produto = req.app.db.get("produtos").find({ id: req.params.id }).value();
+  if(!produto){
     res.sendStatus(404)
   }
-  res.send(book);
+  res.send(produto);
 });
 
 /**
@@ -112,13 +112,13 @@ router.get("/:id", (req, res) => {
  */
 router.post("/", (req, res) => {
 	try {
-		const book = {
+		const produto = {
 			id: uuid(),
 			...req.body,
 		};
-    	req.app.db.get("produtos").push(book).write();
+    	req.app.db.get("produtos").push(produto).write();
     	res.status(201)
-    	res.send(book)
+    	res.send(produto)
 	} catch (error) {
 		return res.status(500).send(error);
 	}
@@ -162,7 +162,7 @@ router.put("/:id", (req, res) => {
 			.find({ id: req.params.id })
 			.assign(req.body)
 			.write();
-		res.send(req.app.db.get("books").find({ id: req.params.id }));
+		res.send(req.app.db.get("produtos").find({ id: req.params.id }));
 	} catch (error) {
 		return res.status(500).send(error);
 	}

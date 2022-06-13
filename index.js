@@ -1,6 +1,6 @@
 const express = require("express");
+//const hateoas = require('express-hateoas-links');
 const cors = require("cors");
-//const morgan = require("morgan");
 const low = require("lowdb");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -31,9 +31,9 @@ const options = {
 const app = express();
 const specs = swaggerJsDoc(options);
 app.use("/swagger", swaggerUI.serve, swaggerUI.setup(specs));
+//app.use(hateoas);
 app.db = db;
 app.use(cors());
 app.use(express.json());
-//app.use(morgan("dev"));
 app.use("/produtos", produtosRouter);
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
