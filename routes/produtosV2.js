@@ -141,6 +141,7 @@ router.post("/", (req, res) => {
 		if(req.query.hateoas){
 			buildLinks(produto.id,['isSelf','isUpdate','isDelete'])
 		}
+		res.addHeader("Location", `/v2/produtos/${produto.id}`);
     	res.send(produto)
 	} catch (error) {
 		return res.status(500).send(error);

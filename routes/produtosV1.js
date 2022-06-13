@@ -122,6 +122,7 @@ router.post("/", (req, res) => {
 			...req.body,
 		};
     	req.app.db.get("produtos").push(produto).write();
+		res.addHeader("Location", `/v1/produtos/${produto.id}`);
     	res.status(201)
     	res.send(produto)
 	} catch (error) {
