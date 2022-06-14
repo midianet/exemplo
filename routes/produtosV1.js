@@ -122,9 +122,8 @@ router.post("/", (req, res) => {
 			...req.body,
 		};
     	req.app.db.get("produtos").push(produto).write();
-		res.addHeader("Location", `/v1/produtos/${produto.id}`);
-    	res.status(201)
-    	res.send(produto)
+		res.setHeader("Location", `/v1/produtos/${produto.id}`);
+    	res.sendStatus(201);
 	} catch (error) {
 		return res.status(500).send(error);
 	}
@@ -168,7 +167,7 @@ router.put("/:id", (req, res) => {
 			.find({ id: req.params.id })
 			.assign(req.body)
 			.write();
-		res.send(req.app.db.get("produtos").find({ id: req.params.id }));
+		res.sendStatus(200);
 	} catch (error) {
 		return res.status(500).send(error);
 	}

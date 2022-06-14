@@ -102,9 +102,9 @@ router.get("/:id", (req, res) => {
 	if(req.query.hateoas){
 		produto.links = buildLinks(produto.id,['isSelf','isUpdate','isDelete'])
 	}
-	res.send(produto);    
+	res.send(produto);
   }else{
-	res.sendStatus(404)
+	res.sendStatus(404);
   }
 });
 
@@ -137,12 +137,11 @@ router.post("/", (req, res) => {
 			...req.body,
 		};
     	req.app.db.get("produtos").push(produto).write();
-    	res.status(201)
 		if(req.query.hateoas){
 			buildLinks(produto.id,['isSelf','isUpdate','isDelete'])
 		}
-		res.addHeader("Location", `/v2/produtos/${produto.id}`);
-    	res.send(produto)
+		res.setHeader("Location", `/v1/produtos/${produto.id}`);
+    	res.sendStatus(201);
 	} catch (error) {
 		return res.status(500).send(error);
 	}
@@ -190,7 +189,7 @@ router.put("/:id", (req, res) => {
 		if(req.query.hateoas){
 			buildLinks(produto.id,['isSelf','isUpdate','isDelete'])
 		}		
-		res.send(produto);
+		res.sendStatus(200);
 	} catch (error) {
 		return res.status(500).send(error);
 	}
