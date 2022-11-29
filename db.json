@@ -17,6 +17,17 @@
       "nome": "Sandália Tropical",
       "imposto": 55.33,
       "valor": 123.12
+    },
+    {
+      "id": "d5fE_asz",
+      "nome": "Novo Sapato",
+      "valor": 123.45
+    },
+    {
+      "id": "e46bbcf6-cdd2-446b-b11d-3fcd88938c70",
+      "nome": "Bota Quadrilha",
+      "valor": 243.73,
+      "imposto": 15
     }
   ]
 }
